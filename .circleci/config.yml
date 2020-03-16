@@ -11,7 +11,7 @@ jobs:
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
+          name: Chmod permissions
           command: sudo chmod +x ./gradlew
       - run:
           name: Download Dependencies
@@ -32,20 +32,20 @@ jobs:
 
   lint-develop:
     working_directory: ~/code
-      docker:
-          - image: circleci/android:api-29
-      steps:
-        - run:
-            name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
-            command: sudo chmod +x ./gradlew
-        - run:
-            name: Download Dependencies
-            command: ./gradlew androidDependencies
-
-        - run:
-            name: Run Lint
-            command: ./gradlew lint
-
+    docker:
+      - image: circleci/android:api-29
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - run:
+          name: Chmod permissions
+          command: sudo chmod +x ./gradlew
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - run:
+          name: Run Lint
+          command: ./gradlew lint
 
 
 workflows:
